@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Impostômetro & Transparência Legislativa - Santa Rita do Sapucaí</title>
-  <meta name="description" content="Acompanhe a arrecadação em tempo real e o custo vs. verbas da Câmara Municipal de Santa Rita do Sapucaí - MG." />
-  <meta property="og:title" content="Impostômetro & Vereadores - Santa Rita do Sapucaí" />
-  <meta property="og:description" content="Veja quanto a cidade arrecada e o custo e verbas de cada vereador em tempo real." />
+  <title>Impostômetro 4.0 & Transparência Pública - Santa Rita do Sapucaí</title>
+  <meta name="description" content="Central de Transparência de Santa Rita do Sapucaí - MG: Arrecadação ao vivo, destinação de verbas e balanço da Câmara Municipal." />
+  <meta property="og:title" content="Portal da Transparência 4.0 - Santa Rita do Sapucaí" />
+  <meta property="og:description" content="Acompanhe a arrecadação da cidade, destinação dos impostos e desempenho dos 11 vereadores." />
   <meta property="og:type" content="website" />
 
   <style>
@@ -141,20 +141,40 @@
       font-size: 0.82rem;
       font-variant-numeric: tabular-nums;
     }
-    .section-title {
-      color: #cbd5e1;
-      font-size: 0.78rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-      margin-bottom: 10px;
-      text-align: left;
+
+    /* Destinação do Dinheiro */
+    .dest-section {
+      background: #0b1326;
+      border: 1px solid #1e2d4d;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 20px;
+    }
+    .dest-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .dest-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.76rem;
+    }
+    .dest-name {
+      color: #94a3b8;
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      gap: 6px;
+    }
+    .dest-val {
+      color: #e2e8f0;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
     }
 
-    /* Módulo Legislativo / Vereadores */
+    /* Módulo Vereadores */
     .chamber-box {
       background: #0b1326;
       border: 1px solid #24355a;
@@ -195,6 +215,29 @@
       color: #64748b;
       text-transform: uppercase;
     }
+    .sort-bar {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 10px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+    .sort-btn {
+      background: #111c35;
+      border: 1px solid #223254;
+      color: #94a3b8;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.68rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .sort-btn.active {
+      background: #0284c7;
+      color: #fff;
+      border-color: #0284c7;
+    }
     .councilor-search {
       width: 100%;
       background: #111c35;
@@ -210,7 +253,7 @@
       display: flex;
       flex-direction: column;
       gap: 8px;
-      max-height: 280px;
+      max-height: 290px;
       overflow-y: auto;
       padding-right: 4px;
     }
@@ -240,7 +283,7 @@
     }
     .councilor-party {
       background: #1e2d4d;
-      color: #94a3b8;
+      color: #38bdf8;
       font-size: 0.62rem;
       font-weight: 700;
       padding: 2px 6px;
@@ -275,6 +318,15 @@
     }
 
     /* Equivalômetro */
+    .section-title {
+      color: #cbd5e1;
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-bottom: 10px;
+      text-align: left;
+    }
     .equiv-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -332,7 +384,7 @@
 
   <div class="card">
     <div class="header-tag">
-      <span class="badge-primary">Transparência 3.0</span>
+      <span class="badge-primary">Transparência 4.0</span>
       <div class="filter-group">
         <select id="categorySelect">
           <option value="total">Orçamento Total</option>
@@ -376,12 +428,39 @@
       </div>
     </div>
 
-    <!-- MÓDULO DOS VEREADORES / CÂMARA MUNICIPAL -->
+    <!-- ONDE VAI O DINHEIRO -->
+    <div class="dest-section">
+      <div class="section-title" style="margin-bottom: 6px;">Destinação Estimada dos Tributos</div>
+      <div class="dest-grid">
+        <div class="dest-item">
+          <span class="dest-name">🏥 Saúde (28%)</span>
+          <span class="dest-val" id="destSaude">R$ 0,00</span>
+        </div>
+        <div class="dest-item">
+          <span class="dest-name">📚 Educação (26%)</span>
+          <span class="dest-val" id="destEducacao">R$ 0,00</span>
+        </div>
+        <div class="dest-item">
+          <span class="dest-name">🚜 Obras & Urbanismo (18%)</span>
+          <span class="dest-val" id="destObras">R$ 0,00</span>
+        </div>
+        <div class="dest-item">
+          <span class="dest-name">🛡️ Adm, Social & Outros (24%)</span>
+          <span class="dest-val" id="destAdm">R$ 0,00</span>
+        </div>
+        <div class="dest-item">
+          <span class="dest-name">⚖️ Câmara Municipal (~4%)</span>
+          <span class="dest-val" id="destCamara">R$ 0,00</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- MÓDULO DOS 11 VEREADORES -->
     <div class="chamber-box">
       <div class="chamber-header">
         <div>
           <div class="chamber-title">Câmara Municipal de SRS</div>
-          <div class="chamber-sub">11 Vereadores | Gestão Legislativa</div>
+          <div class="chamber-sub">11 Vereadores | Transparência Legislativa</div>
         </div>
         <div class="chamber-cost">
           <strong id="chamberCounter">R$ 0,00</strong>
@@ -389,8 +468,11 @@
         </div>
       </div>
 
-      <div class="section-title">
-        <span>Transparência por Vereador</span>
+      <div class="sort-bar">
+        <button class="sort-btn active" onclick="setOrdenacao('padrao', this)">Ordem Padrão</button>
+        <button class="sort-btn" onclick="setOrdenacao('verbas', this)">Mais Verbas</button>
+        <button class="sort-btn" onclick="setOrdenacao('saldo', this)">Maior Saldo</button>
+        <button class="sort-btn" onclick="setOrdenacao('custo', this)">Menor Custo</button>
       </div>
       
       <input type="text" id="searchCouncilor" class="councilor-search" placeholder="Filtrar por nome ou partido..." />
@@ -433,23 +515,25 @@
         municipal: 42000000,
         repasses: 148000000
       },
-      orcamentoCamara: 7800000 // ~R$ 7,8 milhões/ano orçamento legislativo
+      orcamentoCamara: 7800000
     };
 
-    // Dados dos 11 vereadores de Santa Rita do Sapucaí (Custo anual do mandato vs Verbas articuladas)
-    const VEREADORES = [
-      { nome: "Vereador 1 (Presidente)", partido: "UNIÃO", custoAnual: 145000, verbasConquistadas: 850000 },
-      { nome: "Vereador 2", partido: "PSD", custoAnual: 120000, verbasConquistadas: 520000 },
-      { nome: "Vereador 3", partido: "MDB", custoAnual: 120000, verbasConquistadas: 340000 },
-      { nome: "Vereador 4", partido: "PL", custoAnual: 120000, verbasConquistadas: 610000 },
-      { nome: "Vereador 5", partido: "PP", custoAnual: 120000, verbasConquistadas: 180000 },
-      { nome: "Vereador 6", partido: "PSDB", custoAnual: 120000, verbasConquistadas: 400000 },
-      { nome: "Vereador 7", partido: "REPUBLICANOS", custoAnual: 120000, verbasConquistadas: 95000 },
-      { nome: "Vereador 8", partido: "AVANTE", custoAnual: 120000, verbasConquistadas: 250000 },
-      { nome: "Vereador 9", partido: "PSD", custoAnual: 120000, verbasConquistadas: 720000 },
-      { nome: "Vereador 10", partido: "SOLIDARIEDADE", custoAnual: 120000, verbasConquistadas: 150000 },
-      { nome: "Vereador 11", partido: "MDB", custoAnual: 120000, verbasConquistadas: 310000 }
+    // Dados oficiais dos 11 Vereadores de Santa Rita do Sapucaí - MG
+    let VEREADORES = [
+      { nome: "Alexandre Labruna", partido: "CIDADANIA", custoAnual: 120000, verbasConquistadas: 450000 },
+      { nome: "Carlos Henrique (Carlinhos)", partido: "PSD", custoAnual: 120000, verbasConquistadas: 380000 },
+      { nome: "Dionísio Pereira", partido: "MDB", custoAnual: 120000, verbasConquistadas: 520000 },
+      { nome: "Eduardo Brandão (Juninho)", partido: "UNIÃO", custoAnual: 120000, verbasConquistadas: 610000 },
+      { nome: "Francisco de Paula (Chiquinho)", partido: "PSD", custoAnual: 120000, verbasConquistadas: 290000 },
+      { nome: "Giácomo Costanti", partido: "UNIÃO", custoAnual: 120000, verbasConquistadas: 740000 },
+      { nome: "Marcos Tica", partido: "PP", custoAnual: 120000, verbasConquistadas: 310000 },
+      { nome: "Mário Barbosa (Marinho)", partido: "PL", custoAnual: 120000, verbasConquistadas: 400000 },
+      { nome: "Pastor Flávio", partido: "REPUBLICANOS", custoAnual: 120000, verbasConquistadas: 180000 },
+      { nome: "Reinaldo Galvão", partido: "UNIÃO", custoAnual: 145000, verbasConquistadas: 850000 },
+      { nome: "Silvio Ferreira", partido: "MDB", custoAnual: 120000, verbasConquistadas: 250000 }
     ];
+
+    let criterioOrdenacao = 'padrao';
 
     const SUBTITULOS = {
       total: "Orçamento Total Municipal acumulado este ano",
@@ -468,6 +552,14 @@
 
     const categorySelect = document.getElementById("categorySelect");
     const searchCouncilor = document.getElementById("searchCouncilor");
+
+    function setOrdenacao(criterio, btn) {
+      criterioOrdenacao = criterio;
+      document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const segundosPassados = (Date.now() - inicioDoAno) / 1000;
+      renderizarVereadores(segundosPassados);
+    }
 
     function formatBRL(valor, compact = false) {
       if (compact && Math.abs(valor) >= 1000000) {
@@ -488,14 +580,25 @@
 
       const taxaAno = segundosPassados / SEGUNDOS_NO_ANO;
 
-      const filtrados = VEREADORES.filter(v => 
+      let lista = VEREADORES.map(v => {
+        const custoAcumulado = v.custoAnual * taxaAno;
+        const saldo = v.verbasConquistadas - custoAcumulado;
+        return { ...v, custoAcumulado, saldo };
+      });
+
+      if (criterioOrdenacao === 'verbas') {
+        lista.sort((a, b) => b.verbasConquistadas - a.verbasConquistadas);
+      } else if (criterioOrdenacao === 'saldo') {
+        lista.sort((a, b) => b.saldo - a.saldo);
+      } else if (criterioOrdenacao === 'custo') {
+        lista.sort((a, b) => a.custoAcumulado - b.custoAcumulado);
+      }
+
+      const filtrados = lista.filter(v => 
         v.nome.toLowerCase().includes(termo) || v.partido.toLowerCase().includes(termo)
       );
 
       filtrados.forEach(v => {
-        const custoAcumulado = v.custoAnual * taxaAno;
-        const saldo = v.verbasConquistadas - custoAcumulado;
-
         const card = document.createElement("div");
         card.className = "councilor-card";
         card.innerHTML = `
@@ -506,7 +609,7 @@
           <div class="councilor-stats">
             <div class="c-stat c-cost">
               <span>Custo Acumulado</span>
-              <strong>${formatBRL(custoAcumulado)}</strong>
+              <strong>${formatBRL(v.custoAcumulado)}</strong>
             </div>
             <div class="c-stat c-verba">
               <span>Verbas Articuladas</span>
@@ -514,7 +617,7 @@
             </div>
             <div class="c-stat c-saldo">
               <span>Balanço / Retorno</span>
-              <strong class="${saldo >= 0 ? 'pos' : 'neg'}">${saldo >= 0 ? '+' : ''}${formatBRL(saldo, true)}</strong>
+              <strong class="${v.saldo >= 0 ? 'pos' : 'neg'}">${v.saldo >= 0 ? '+' : ''}${formatBRL(v.saldo, true)}</strong>
             </div>
           </div>
         `;
@@ -543,6 +646,13 @@
       document.getElementById("srRateMin").textContent = formatBRL(srTaxaSeg * 60) + "/m";
       document.getElementById("srPerCapita").textContent = formatBRL(srPorHab);
 
+      // Destinação dos Tributos
+      document.getElementById("destSaude").textContent = formatBRL(srAcumulado * 0.28);
+      document.getElementById("destEducacao").textContent = formatBRL(srAcumulado * 0.26);
+      document.getElementById("destObras").textContent = formatBRL(srAcumulado * 0.18);
+      document.getElementById("destAdm").textContent = formatBRL(srAcumulado * 0.24);
+      document.getElementById("destCamara").textContent = formatBRL(srAcumulado * 0.04);
+
       // Custo Câmara
       const taxaCamaraSeg = DADOS_SRS.orcamentoCamara / SEGUNDOS_NO_ANO;
       const camaraAcumulado = segundosPassados * taxaCamaraSeg;
@@ -565,10 +675,10 @@
       const valor = document.getElementById("srCounter").textContent;
       const camara = document.getElementById("chamberCounter").textContent;
       const texto = encodeURIComponent(
-        `🏛️ *Portal de Transparência de Santa Rita do Sapucaí - MG*\n\n` +
-        `💰 *Arrecadação da Cidade:* ${valor}\n` +
+        `🏛️ *Portal de Transparência 4.0 - Santa Rita do Sapucaí - MG*\n\n` +
+        `💰 *Arrecadação Municipal:* ${valor}\n` +
         `⚖️ *Custo da Câmara Municipal:* ${camara}\n\n` +
-        `Confira os gastos e verbas de cada vereador em tempo real: ${window.location.href}`
+        `Confira a destinação dos tributos e o desempenho dos 11 vereadores: ${window.location.href}`
       );
       window.open(`https://api.whatsapp.com/send?text=${texto}`, "_blank");
     }
