@@ -3,688 +3,819 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <title>Impostômetro 4.0 & Transparência Pública - Santa Rita do Sapucaí</title>
-  <meta name="description" content="Central de Transparência de Santa Rita do Sapucaí - MG: Arrecadação ao vivo, destinação de verbas e balanço da Câmara Municipal." />
-  <meta property="og:title" content="Portal da Transparência 4.0 - Santa Rita do Sapucaí" />
-  <meta property="og:description" content="Acompanhe a arrecadação da cidade, destinação dos impostos e desempenho dos 11 vereadores." />
-  <meta property="og:type" content="website" />
-
+  <title>Roubômetro Brasil - Monitor de Perdas e Recuperação de Ativos Públicos</title>
+  <meta name="description" content="Painel cívico em tempo real de estimativa de recursos públicos subtraídos por corrupção e desvios versus ativos recuperados no Brasil." />
   <style>
+    :root {
+      --bg-primary: #090d16;
+      --bg-secondary: #111827;
+      --bg-card: rgba(17, 24, 39, 0.75);
+      --bg-card-hover: rgba(31, 41, 55, 0.85);
+      --text-primary: #f9fafb;
+      --text-secondary: #9ca3af;
+      --text-muted: #6b7280;
+      
+      --accent-danger: #ef4444;
+      --accent-danger-glow: rgba(239, 68, 68, 0.25);
+      --accent-danger-dark: #7f1d1d;
+      
+      --accent-success: #10b981;
+      --accent-success-glow: rgba(16, 185, 129, 0.25);
+      --accent-success-dark: #064e3b;
+      
+      --accent-info: #38bdf8;
+      --accent-warning: #f59e0b;
+      
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-accent: rgba(239, 68, 68, 0.4);
+      
+      --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'Courier New', Courier, monospace, Consolas;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
+
     body {
-      background-color: #080e1e;
-      color: #f8fafc;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: var(--font-sans);
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.5;
+      min-height: 100vh;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(220, 38, 38, 0.15), transparent),
+        radial-gradient(ellipse 60% 40% at 85% 80%, rgba(16, 185, 129, 0.08), transparent);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px 16px 64px 16px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(239, 68, 68, 0.15);
+      color: #fca5a5;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      background-color: var(--accent-danger);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--accent-danger);
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(1.3); }
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    .tagline {
+      font-size: 1.05rem;
+      color: var(--text-secondary);
+      max-width: 680px;
+      margin: 0 auto 20px auto;
+    }
+
+    .time-selector-container {
       display: flex;
       justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      padding: 20px 12px;
+      gap: 8px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
     }
+
+    .time-btn {
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-subtle);
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .time-btn:hover {
+      background: var(--bg-card-hover);
+      color: var(--text-primary);
+    }
+
+    .time-btn.active {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: var(--accent-danger);
+      color: #fff;
+      box-shadow: 0 0 15px var(--accent-danger-glow);
+    }
+
+    .display-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 880px) {
+      .display-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
     .card {
-      background: #111c35;
-      border: 1px solid #1e2d4d;
-      border-radius: 20px;
-      padding: 24px 18px;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
-      max-width: 580px;
-      width: 100%;
+      background: var(--bg-card);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 16px;
+      border: 1px solid var(--border-subtle);
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s ease, border-color 0.2s ease;
     }
-    .header-tag {
+
+    .card:hover {
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .card-loss {
+      border-color: var(--border-accent);
+      background: linear-gradient(160deg, rgba(239, 68, 68, 0.08) 0%, var(--bg-card) 60%);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 25px rgba(239, 68, 68, 0.1);
+    }
+
+    .card-recovered {
+      border-color: rgba(16, 185, 129, 0.35);
+      background: linear-gradient(160deg, rgba(16, 185, 129, 0.08) 0%, var(--bg-card) 60%);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 25px rgba(16, 185, 129, 0.08);
+    }
+
+    .card-header-flex {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 14px;
-    }
-    .badge-primary {
-      background: #0284c7;
-      color: #ffffff;
-      font-size: 0.7rem;
-      font-weight: 800;
-      letter-spacing: 0.8px;
-      text-transform: uppercase;
-      padding: 4px 10px;
-      border-radius: 9999px;
-    }
-    .filter-group select {
-      background: #0b1326;
-      color: #94a3b8;
-      border: 1px solid #223254;
-      border-radius: 8px;
-      padding: 6px 10px;
-      font-size: 0.78rem;
-      font-weight: 600;
-      outline: none;
-      cursor: pointer;
-    }
-    .main-focus {
-      text-align: center;
-      margin-bottom: 14px;
-    }
-    .city-title {
-      color: #f8fafc;
-      font-size: 1.4rem;
-      font-weight: 800;
-      margin-bottom: 3px;
-    }
-    .city-subtitle {
-      color: #64748b;
-      font-size: 0.8rem;
       margin-bottom: 12px;
     }
-    .display-box {
-      background: linear-gradient(180deg, rgba(14, 165, 233, 0.12) 0%, rgba(14, 165, 233, 0.02) 100%);
-      border: 1px solid rgba(56, 189, 248, 0.35);
-      border-radius: 14px;
-      padding: 16px 10px;
-      margin-bottom: 14px;
+
+    .card-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
-    .display-value {
-      font-size: 2.15rem;
-      font-weight: 800;
+
+    .card-loss .card-title { color: #f87171; }
+    .card-recovered .card-title { color: #34d399; }
+
+    .counter-value {
+      font-family: var(--font-mono);
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+      white-space: nowrap;
       font-variant-numeric: tabular-nums;
-      color: #38bdf8;
-      letter-spacing: -0.5px;
-      text-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
     }
-    .progress-section {
-      margin-bottom: 16px;
+
+    .card-loss .counter-value {
+      color: #ff4d4d;
+      text-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
     }
-    .progress-labels {
+
+    .card-recovered .counter-value {
+      color: #10b981;
+      text-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+    }
+
+    .counter-subtext {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+    .efficiency-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 20px 24px;
+      margin-bottom: 24px;
+    }
+
+    .eff-header {
       display: flex;
       justify-content: space-between;
-      font-size: 0.72rem;
-      color: #94a3b8;
-      margin-bottom: 5px;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 0.9rem;
       font-weight: 600;
     }
-    .progress-track {
-      background: #0b1326;
-      height: 7px;
+
+    .eff-rate-highlight {
+      font-family: var(--font-mono);
+      font-weight: 800;
+      color: var(--accent-warning);
+    }
+
+    .progress-bar-bg {
+      width: 100%;
+      height: 14px;
+      background: rgba(255, 255, 255, 0.06);
       border-radius: 999px;
       overflow: hidden;
-      border: 1px solid #1a2744;
-    }
-    .progress-fill {
-      background: linear-gradient(90deg, #0284c7, #38bdf8);
-      height: 100%;
-      border-radius: 999px;
-    }
-    .metrics-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      margin-bottom: 18px;
-    }
-    .metric-card {
-      background: #0b1326;
-      padding: 9px 6px;
-      border-radius: 10px;
-      border: 1px solid #1a2744;
-      text-align: center;
-    }
-    .metric-card span {
-      display: block;
-      color: #64748b;
-      font-size: 0.65rem;
-      text-transform: uppercase;
-      font-weight: 700;
-      margin-bottom: 3px;
-    }
-    .metric-card strong {
-      color: #e2e8f0;
-      font-size: 0.82rem;
-      font-variant-numeric: tabular-nums;
+      position: relative;
+      display: flex;
     }
 
-    /* Destinação do Dinheiro */
-    .dest-section {
-      background: #0b1326;
-      border: 1px solid #1e2d4d;
-      border-radius: 12px;
-      padding: 14px;
-      margin-bottom: 20px;
+    .progress-bar-loss {
+      height: 100%;
+      background: linear-gradient(90deg, #ef4444, #dc2626);
+      transition: width 0.3s ease;
     }
-    .dest-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-top: 10px;
+
+    .progress-bar-rec {
+      height: 100%;
+      background: linear-gradient(90deg, #10b981, #059669);
+      transition: width 0.3s ease;
     }
-    .dest-item {
+
+    .eff-legend {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      font-size: 0.76rem;
-    }
-    .dest-name {
-      color: #94a3b8;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .dest-val {
-      color: #e2e8f0;
-      font-weight: 700;
-      font-variant-numeric: tabular-nums;
+      margin-top: 8px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
     }
 
-    /* Módulo Vereadores */
-    .chamber-box {
-      background: #0b1326;
-      border: 1px solid #24355a;
-      border-radius: 14px;
+    .stats-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .stat-box {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
       padding: 16px;
-      margin-bottom: 20px;
       text-align: left;
     }
-    .chamber-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 12px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid #1e2d4d;
-    }
-    .chamber-title {
-      font-size: 0.88rem;
-      font-weight: 700;
-      color: #f8fafc;
-    }
-    .chamber-sub {
-      font-size: 0.72rem;
-      color: #94a3b8;
-    }
-    .chamber-cost {
-      text-align: right;
-    }
-    .chamber-cost strong {
-      display: block;
-      color: #f59e0b;
-      font-size: 1.05rem;
-      font-weight: 800;
-      font-variant-numeric: tabular-nums;
-    }
-    .chamber-cost span {
-      font-size: 0.65rem;
-      color: #64748b;
+
+    .stat-label {
+      font-size: 0.75rem;
       text-transform: uppercase;
-    }
-    .sort-bar {
-      display: flex;
-      gap: 6px;
-      margin-bottom: 10px;
-      overflow-x: auto;
-      padding-bottom: 4px;
-    }
-    .sort-btn {
-      background: #111c35;
-      border: 1px solid #223254;
-      color: #94a3b8;
-      padding: 4px 8px;
-      border-radius: 6px;
-      font-size: 0.68rem;
-      font-weight: 600;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-    .sort-btn.active {
-      background: #0284c7;
-      color: #fff;
-      border-color: #0284c7;
-    }
-    .councilor-search {
-      width: 100%;
-      background: #111c35;
-      border: 1px solid #223254;
-      color: #f8fafc;
-      padding: 8px 12px;
-      border-radius: 8px;
-      font-size: 0.78rem;
-      outline: none;
-      margin-bottom: 12px;
-    }
-    .councilor-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      max-height: 290px;
-      overflow-y: auto;
-      padding-right: 4px;
-    }
-    .councilor-list::-webkit-scrollbar {
-      width: 4px;
-    }
-    .councilor-list::-webkit-scrollbar-thumb {
-      background: #1e2d4d;
-      border-radius: 4px;
-    }
-    .councilor-card {
-      background: #111c35;
-      border: 1px solid #1e2b47;
-      border-radius: 10px;
-      padding: 10px 12px;
-    }
-    .councilor-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
       margin-bottom: 6px;
     }
-    .councilor-name {
-      font-size: 0.82rem;
-      font-weight: 700;
-      color: #f1f5f9;
-    }
-    .councilor-party {
-      background: #1e2d4d;
-      color: #38bdf8;
-      font-size: 0.62rem;
-      font-weight: 700;
-      padding: 2px 6px;
-      border-radius: 4px;
-    }
-    .councilor-stats {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 6px;
-      font-size: 0.7rem;
-    }
-    .c-stat span {
-      display: block;
-      color: #64748b;
-      font-size: 0.62rem;
-      text-transform: uppercase;
-    }
-    .c-stat strong {
-      font-variant-numeric: tabular-nums;
-    }
-    .c-cost strong {
-      color: #ef4444;
-    }
-    .c-verba strong {
-      color: #22c55e;
-    }
-    .c-saldo strong.pos {
-      color: #38bdf8;
-    }
-    .c-saldo strong.neg {
-      color: #f59e0b;
+
+    .stat-val {
+      font-family: var(--font-mono);
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text-primary);
     }
 
-    /* Equivalômetro */
     .section-title {
-      color: #cbd5e1;
-      font-size: 0.78rem;
+      font-size: 1.3rem;
       font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-      margin-bottom: 10px;
-      text-align: left;
-    }
-    .equiv-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      margin-bottom: 20px;
-    }
-    .equiv-card {
-      background: #0b1326;
-      border: 1px solid #1a2744;
-      border-radius: 10px;
-      padding: 10px 6px;
-      text-align: center;
-    }
-    .equiv-icon {
-      font-size: 1.2rem;
-      margin-bottom: 2px;
-      display: block;
-    }
-    .equiv-card strong {
-      display: block;
-      color: #38bdf8;
-      font-size: 0.92rem;
-      font-weight: 800;
-      font-variant-numeric: tabular-nums;
-    }
-    .equiv-card span {
-      color: #94a3b8;
-      font-size: 0.65rem;
-      line-height: 1.1;
-      display: block;
-      margin-top: 2px;
-    }
-    .share-btn {
-      width: 100%;
-      background: #22c55e;
-      color: #042f13;
-      border: none;
-      border-radius: 10px;
-      padding: 12px;
-      font-size: 0.88rem;
-      font-weight: 700;
-      cursor: pointer;
+      margin-bottom: 16px;
       display: flex;
       align-items: center;
-      justify-content: center;
       gap: 8px;
-      transition: background 0.2s, transform 0.1s;
+      color: #fff;
     }
-    .share-btn:active {
-      transform: scale(0.98);
+
+    .equiv-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-bottom: 36px;
+    }
+
+    .equiv-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .equiv-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .equiv-icon {
+      font-size: 1.8rem;
+      margin-bottom: 8px;
+    }
+
+    .equiv-count {
+      font-family: var(--font-mono);
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--accent-info);
+      margin-bottom: 4px;
+    }
+
+    .equiv-desc {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    .equiv-unit {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 8px;
+    }
+
+    .calc-section {
+      background: linear-gradient(180deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 36px;
+    }
+
+    .calc-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      align-items: center;
+    }
+
+    @media (max-width: 768px) {
+      .calc-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .calc-input-group label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+
+    .calc-input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .calc-input-prefix {
+      position: absolute;
+      left: 14px;
+      color: var(--text-muted);
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+
+    .calc-input {
+      width: 100%;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 12px 14px 12px 48px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #fff;
+      font-family: var(--font-mono);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .calc-input:focus {
+      border-color: var(--accent-info);
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+    }
+
+    .calc-result-box {
+      background: rgba(0, 0, 0, 0.35);
+      border-radius: 12px;
+      padding: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .calc-res-title {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .calc-res-value {
+      font-family: var(--font-mono);
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: #f87171;
+      margin-bottom: 4px;
+    }
+
+    .calc-res-days {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .calc-res-days strong {
+      color: var(--accent-warning);
+    }
+
+    .methodology {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 24px;
+      margin-bottom: 40px;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    .methodology h3 {
+      font-size: 1.05rem;
+      color: #fff;
+      margin-bottom: 12px;
+    }
+
+    .methodology ul {
+      padding-left: 20px;
+      margin-top: 10px;
+      display: grid;
+      gap: 8px;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      padding-top: 20px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .btn-share {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      border: 1px solid var(--border-subtle);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 16px;
+      transition: background 0.2s;
+    }
+
+    .btn-share:hover {
+      background: rgba(255, 255, 255, 0.15);
     }
   </style>
 </head>
 <body>
 
-  <div class="card">
-    <div class="header-tag">
-      <span class="badge-primary">Transparência 4.0</span>
-      <div class="filter-group">
-        <select id="categorySelect">
-          <option value="total">Orçamento Total</option>
-          <option value="municipal">Tributos Próprios (IPTU/ISS)</option>
-          <option value="repasses">Repasses (ICMS/FPM/IPVA)</option>
-        </select>
+  <div class="container">
+    
+    <header>
+      <div class="live-badge">
+        <span class="live-dot"></span>
+        Monitoramento Cívico em Tempo Real
       </div>
-    </div>
+      <h1>Roubômetro Brasil</h1>
+      <p class="tagline">
+        Estimativa do valor subtraído por desvios e corrupção pública versus o montante efetivamente recuperado aos cofres da União.
+      </p>
 
-    <div class="main-focus">
-      <h1 class="city-title">Santa Rita do Sapucaí - MG</h1>
-      <p class="city-subtitle" id="categorySubtitle">Estimativa acumulada de arrecadação este ano</p>
-      
-      <div class="display-box">
-        <div class="display-value" id="srCounter">R$ 0,00</div>
+      <div class="time-selector-container">
+        <button class="time-btn active" data-period="4years" onclick="setPeriod('4years')">Últimos 4 Anos (Acumulado)</button>
+        <button class="time-btn" data-period="year" onclick="setPeriod('year')">Ano Vigente (2026)</button>
+        <button class="time-btn" data-period="today" onclick="setPeriod('today')">Hoje (24 Horas)</button>
       </div>
-    </div>
+    </header>
 
-    <div class="progress-section">
-      <div class="progress-labels">
-        <span>Progresso do Ano</span>
-        <span id="progressPercent">0%</span>
-      </div>
-      <div class="progress-track">
-        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
-      </div>
-    </div>
-
-    <div class="metrics-grid">
-      <div class="metric-card">
-        <span>Arrecadação / s</span>
-        <strong id="srRateSec">R$ 0,00</strong>
-      </div>
-      <div class="metric-card">
-        <span>Por Minuto</span>
-        <strong id="srRateMin">R$ 0,00</strong>
-      </div>
-      <div class="metric-card">
-        <span>Por Habitante</span>
-        <strong id="srPerCapita">R$ 0,00</strong>
-      </div>
-    </div>
-
-    <!-- ONDE VAI O DINHEIRO -->
-    <div class="dest-section">
-      <div class="section-title" style="margin-bottom: 6px;">Destinação Estimada dos Tributos</div>
-      <div class="dest-grid">
-        <div class="dest-item">
-          <span class="dest-name">🏥 Saúde (28%)</span>
-          <span class="dest-val" id="destSaude">R$ 0,00</span>
+    <section class="display-grid">
+      <div class="card card-loss">
+        <div class="card-header-flex">
+          <span class="card-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            Prejuízo Líquido Não Recuperado
+          </span>
+          <span style="font-size: 0.75rem; color: #f87171; font-weight: bold; background: rgba(239,68,68,0.2); padding: 2px 8px; border-radius: 4px;">EM TEMPO REAL</span>
         </div>
-        <div class="dest-item">
-          <span class="dest-name">📚 Educação (26%)</span>
-          <span class="dest-val" id="destEducacao">R$ 0,00</span>
-        </div>
-        <div class="dest-item">
-          <span class="dest-name">🚜 Obras & Urbanismo (18%)</span>
-          <span class="dest-val" id="destObras">R$ 0,00</span>
-        </div>
-        <div class="dest-item">
-          <span class="dest-name">🛡️ Adm, Social & Outros (24%)</span>
-          <span class="dest-val" id="destAdm">R$ 0,00</span>
-        </div>
-        <div class="dest-item">
-          <span class="dest-name">⚖️ Câmara Municipal (~4%)</span>
-          <span class="dest-val" id="destCamara">R$ 0,00</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- MÓDULO DOS 11 VEREADORES -->
-    <div class="chamber-box">
-      <div class="chamber-header">
-        <div>
-          <div class="chamber-title">Câmara Municipal de SRS</div>
-          <div class="chamber-sub">11 Vereadores | Transparência Legislativa</div>
-        </div>
-        <div class="chamber-cost">
-          <strong id="chamberCounter">R$ 0,00</strong>
-          <span>Custo Câmara (Ano)</span>
-        </div>
+        <div class="counter-value" id="counter-unrecovered">R$ 0,00</div>
+        <p class="counter-subtext">
+          Recursos subtraídos da sociedade por fraudes, superfaturamentos e desvios que continuam <strong>sem ressarcimento aos cofres públicos</strong>.
+        </p>
       </div>
 
-      <div class="sort-bar">
-        <button class="sort-btn active" onclick="setOrdenacao('padrao', this)">Ordem Padrão</button>
-        <button class="sort-btn" onclick="setOrdenacao('verbas', this)">Mais Verbas</button>
-        <button class="sort-btn" onclick="setOrdenacao('saldo', this)">Maior Saldo</button>
-        <button class="sort-btn" onclick="setOrdenacao('custo', this)">Menor Custo</button>
+      <div class="card card-recovered">
+        <div class="card-header-flex">
+          <span class="card-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            Recuperado aos Cofres Públicos
+          </span>
+          <span style="font-size: 0.75rem; color: #34d399; font-weight: bold; background: rgba(16,185,129,0.2); padding: 2px 8px; border-radius: 4px;">DEVOLVIDO</span>
+        </div>
+        <div class="counter-value" id="counter-recovered">R$ 0,00</div>
+        <p class="counter-subtext">
+          Montante recuperado por acordos de leniência, repatriação de capitais, leilões da Polícia Federal e execuções da AGU/TCU.
+        </p>
       </div>
-      
-      <input type="text" id="searchCouncilor" class="councilor-search" placeholder="Filtrar por nome ou partido..." />
+    </section>
 
-      <div class="councilor-list" id="councilorListContainer"></div>
-    </div>
+    <section class="efficiency-section">
+      <div class="eff-header">
+        <span>Eficiência de Recuperação de Ativos</span>
+        <span class="eff-rate-highlight" id="recovery-percent">4,12%</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-loss" id="bar-loss" style="width: 95.88%;"></div>
+        <div class="progress-bar-rec" id="bar-rec" style="width: 4.12%;"></div>
+      </div>
+      <div class="eff-legend">
+        <span>🔴 95.88% Prejuízo Irrecuperável / Pendente</span>
+        <span>🟢 4.12% Efetivamente Devolvido</span>
+      </div>
+    </section>
 
-    <div class="section-title">Equivalômetro Público</div>
+    <section class="stats-strip">
+      <div class="stat-box">
+        <div class="stat-label">Taxa por Segundo (Subtraído)</div>
+        <div class="stat-val" id="rate-second">R$ 5.390,00</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Taxa por Minuto</div>
+        <div class="stat-val" id="rate-minute">R$ 323.400,00</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Média Diária</div>
+        <div class="stat-val" id="rate-day">R$ 465.753.424,00</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Total Bruto Subtraído</div>
+        <div class="stat-val" id="total-gross">R$ 0,00</div>
+      </div>
+    </section>
+
+    <h2 class="section-title">
+      <span>📉</span> Equivalômetro de Perdas Sociais
+    </h2>
     <div class="equiv-grid">
       <div class="equiv-card">
-        <span class="equiv-icon">🚑</span>
-        <strong id="equivAmbulancia">0</strong>
-        <span>Ambulâncias UTI</span>
+        <div>
+          <div class="equiv-icon">🏥</div>
+          <div class="equiv-count" id="eq-hospitais">0</div>
+          <div class="equiv-desc">Hospitais Regionais de Alta Complexidade</div>
+        </div>
+        <div class="equiv-unit">Custo base: R$ 100 milhões / hospital</div>
       </div>
+
       <div class="equiv-card">
-        <span class="equiv-icon">🛣️</span>
-        <strong id="equivAsfalto">0 km</strong>
-        <span>Recapeamento</span>
+        <div>
+          <div class="equiv-icon">🏫</div>
+          <div class="equiv-count" id="eq-escolas">0</div>
+          <div class="equiv-desc">Escolas de Tempo Integral Padrão FNDE</div>
+        </div>
+        <div class="equiv-unit">Custo base: R$ 15 milhões / unidade</div>
       </div>
+
       <div class="equiv-card">
-        <span class="equiv-icon">🍱</span>
-        <strong id="equivMerenda">0</strong>
-        <span>Refeições Escolares</span>
+        <div>
+          <div class="equiv-icon">🏠</div>
+          <div class="equiv-count" id="eq-casas">0</div>
+          <div class="equiv-desc">Casas Populares Habitacionais</div>
+        </div>
+        <div class="equiv-unit">Custo base: R$ 140 mil / moradia</div>
+      </div>
+
+      <div class="equiv-card">
+        <div>
+          <div class="equiv-icon">🚓</div>
+          <div class="equiv-count" id="eq-viaturas">0</div>
+          <div class="equiv-desc">Viaturas Policiais Blindadas e Equipadas</div>
+        </div>
+        <div class="equiv-unit">Custo base: R$ 220 mil / viatura</div>
       </div>
     </div>
 
-    <button class="share-btn" onclick="compartilharWhatsApp()">
-      <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.312.045-.694.072-2.18-.544-1.898-.788-3.125-2.73-3.22-2.856-.095-.127-.771-1.026-.771-1.956 0-.93.486-1.386.66-1.576.174-.189.38-.237.507-.237.126 0 .253.001.364.007.118.006.276-.045.431.328.16.386.545 1.332.593 1.43.048.098.08.213.016.34-.064.127-.096.206-.19.317-.095.111-.2.247-.286.332-.095.095-.195.199-.084.39.111.19.493.813 1.057 1.316.726.647 1.337.848 1.528.943.19.095.301.079.412-.048.111-.127.476-.555.603-.745.127-.19.254-.158.428-.095.175.063 1.11.523 1.3.618.19.095.317.142.365.222.047.079.047.46-.096.865z"/>
-      </svg>
-      Compartilhar no WhatsApp
-    </button>
+    <section class="calc-section">
+      <h2 class="section-title" style="margin-bottom: 8px;">
+        <span>🧮</span> Calculadora do Impacto no seu Bolso
+      </h2>
+      <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 20px;">
+        Descubra quanto do seu trabalho e dos seus impostos pagos foi consumido por fraudes e desvios de recursos no período selecionado.
+      </p>
+
+      <div class="calc-grid">
+        <div class="calc-input-group">
+          <label for="user-salary">Sua Renda Bruta Mensal:</label>
+          <div class="calc-input-wrapper">
+            <span class="calc-input-prefix">R$</span>
+            <input type="number" id="user-salary" class="calc-input" value="3500" min="0" step="100" oninput="calculateUserImpact()" />
+          </div>
+          <small style="color: var(--text-muted); display: block; margin-top: 6px;">
+            *Estimativa calculada sobre a carga tributária média brasileira (34%) e a proporção subtraída do orçamento.
+          </small>
+        </div>
+
+        <div class="calc-result-box">
+          <div class="calc-res-title">Sua Contribuição Subtraída Estimada:</div>
+          <div class="calc-res-value" id="user-stolen-val">R$ 0,00</div>
+          <div class="calc-res-days" id="user-stolen-days">
+            Isso equivale a <strong>0 dias</strong> de trabalho dedicados unicamente a cobrir o rombo da corrupção.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="methodology">
+      <h3>📚 Metodologia e Fontes de Dados</h3>
+      <p>
+        O <strong>Roubômetro Brasil</strong> é um painel cívico informativo. O cálculo em tempo real utiliza projeções estatísticas consolidadas cruzadas com relatórios oficiais de prestação de contas dos órgãos federais:
+      </p>
+      <ul>
+        <li>
+          <strong>Estimativa de Desvios (Total Subtraído):</strong> Baseado em estudos empíricos da <em>FIESP</em>, <em>Transparência Internacional</em> e <em>UNODC/ONU</em> (~1,5% a 2,0% do PIB nacional).
+        </li>
+        <li>
+          <strong>Dados de Recuperação Efetiva:</strong> Relatórios da <em>AGU</em>, <em>CGU</em>, <em>TCU</em> e apreensões da <em>Polícia Federal</em>.
+        </li>
+        <li>
+          <strong>Atualização Algorítmica:</strong> O valor é atualizado a cada 50ms via relógio do navegador a uma taxa linear ponderada de <strong>R$ 5.390,58/s</strong> para desvios e <strong>R$ 221,95/s</strong> para recursos devolvidos.
+        </li>
+      </ul>
+    </section>
+
+    <footer>
+      <button class="btn-share" onclick="shareDashboard()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y1="10.49"></line></svg>
+        Compartilhar Roubômetro
+      </button>
+      <p>Roubômetro Brasil &bull; Projeto Cívico de Transparência Pública &bull; Código Aberto</p>
+    </footer>
+
   </div>
 
   <script>
-    const DADOS_SRS = {
-      populacao: 44000,
-      orcamento: {
-        total: 190000000,
-        municipal: 42000000,
-        repasses: 148000000
-      },
-      orcamentoCamara: 7800000
-    };
+    const RATE_SUBTRACTED_PER_SEC = 5390.58; 
+    const RATE_RECOVERED_PER_SEC = 221.95;   
+    
+    const COST_HOSPITAL = 100000000; 
+    const COST_ESCOLA = 15000000;    
+    const COST_CASA = 140000;        
+    const COST_VIATURA = 220000;     
 
-    let VEREADORES = [
-      { nome: "Alexandre Labruna", partido: "CIDADANIA", custoAnual: 120000, verbasConquistadas: 450000 },
-      { nome: "Carlos Henrique (Carlinhos)", partido: "PSD", custoAnual: 120000, verbasConquistadas: 380000 },
-      { nome: "Dionísio Pereira", partido: "MDB", custoAnual: 120000, verbasConquistadas: 520000 },
-      { nome: "Eduardo Brandão (Juninho)", partido: "UNIÃO", custoAnual: 120000, verbasConquistadas: 610000 },
-      { nome: "Francisco de Paula (Chiquinho)", partido: "PSD", custoAnual: 120000, verbasConquistadas: 290000 },
-      { nome: "Giácomo Costanti", partido: "UNIÃO", custoAnual: 120000, verbasConquistadas: 740000 },
-      { nome: "Marcos Tica", partido: "PP", custoAnual: 120000, verbasConquistadas: 310000 },
-      { nome: "Mário Barbosa (Marinho)", partido: "PL", custoAnual: 120000, verbasConquistadas: 400000 },
-      { nome: "Pastor Flávio", partido: "REPUBLICANOS", custoAnual: 120000, verbasConquistadas: 180000 },
-      { nome: "Reinaldo Galvão", partido: "UNIÃO", custoAnual: 145000, verbasConquistadas: 850000 },
-      { nome: "Silvio Ferreira", partido: "MDB", custoAnual: 120000, verbasConquistadas: 250000 }
-    ];
+    let currentPeriod = '4years';
+    let baseStartDate = calculateBaseDate('4years');
 
-    let criterioOrdenacao = 'padrao';
-
-    const SUBTITULOS = {
-      total: "Orçamento Total Municipal acumulado este ano",
-      municipal: "Apenas Tributos Próprios (IPTU, ISS, Taxas)",
-      repasses: "Apenas Repasses Externos (ICMS, IPVA, FPM, SUS)"
-    };
-
-    const VALOR_AMBULANCIA = 320000;
-    const VALOR_KM_ASFALTO = 380000;
-    const VALOR_REFEICAO = 8.5;
-
-    const SEGUNDOS_NO_ANO = 365.25 * 24 * 60 * 60;
-    const agora = new Date();
-    const inicioDoAno = new Date(agora.getFullYear(), 0, 1, 0, 0, 0).getTime();
-    const fimDoAno = new Date(agora.getFullYear() + 1, 0, 1, 0, 0, 0).getTime();
-
-    const categorySelect = document.getElementById("categorySelect");
-    const searchCouncilor = document.getElementById("searchCouncilor");
-
-    function setOrdenacao(criterio, btn) {
-      criterioOrdenacao = criterio;
-      document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      const segundosPassados = (Date.now() - inicioDoAno) / 1000;
-      renderizarVereadores(segundosPassados);
+    function calculateBaseDate(period) {
+      const now = new Date();
+      if (period === '4years') {
+        const d = new Date();
+        d.setFullYear(d.getFullYear() - 4);
+        return d.getTime();
+      } else if (period === 'year') {
+        return new Date(now.getFullYear(), 0, 1, 0, 0, 0).getTime();
+      } else if (period === 'today') {
+        return new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0).getTime();
+      }
+      return now.getTime() - 4 * 365.25 * 24 * 3600 * 1000;
     }
 
-    function formatBRL(valor, compact = false) {
-      if (compact && Math.abs(valor) >= 1000000) {
-        return "R$ " + (valor / 1000000).toLocaleString("pt-BR", { maximumFractionDigits: 1 }) + " mi";
-      }
-      return valor.toLocaleString("pt-BR", {
-        style: "currency",
-        currency: "BRL",
+    function setPeriod(period) {
+      currentPeriod = period;
+      baseStartDate = calculateBaseDate(period);
+
+      document.querySelectorAll('.time-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-period') === period);
+      });
+
+      calculateUserImpact();
+      updateDashboard();
+    }
+
+    function formatBRL(value) {
+      return value.toLocaleString('pt-BR', {
+        style: 'currency',
+        currency: 'BRL',
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
       });
     }
 
-    function renderizarVereadores(segundosPassados) {
-      const termo = searchCouncilor.value.toLowerCase();
-      const container = document.getElementById("councilorListContainer");
-      container.innerHTML = "";
+    function formatNumber(value) {
+      return Math.floor(value).toLocaleString('pt-BR');
+    }
 
-      const taxaAno = segundosPassados / SEGUNDOS_NO_ANO;
+    function updateDashboard() {
+      const now = Date.now();
+      const elapsedSeconds = Math.max(0, (now - baseStartDate) / 1000);
 
-      let lista = VEREADORES.map(v => {
-        const custoAcumulado = v.custoAnual * taxaAno;
-        const saldo = v.verbasConquistadas - custoAcumulado;
-        return { ...v, custoAcumulado, saldo };
-      });
+      const totalSubtracted = elapsedSeconds * RATE_SUBTRACTED_PER_SEC;
+      const totalRecovered = elapsedSeconds * RATE_RECOVERED_PER_SEC;
+      const unrecovered = Math.max(0, totalSubtracted - totalRecovered);
 
-      if (criterioOrdenacao === 'verbas') {
-        lista.sort((a, b) => b.verbasConquistadas - a.verbasConquistadas);
-      } else if (criterioOrdenacao === 'saldo') {
-        lista.sort((a, b) => b.saldo - a.saldo);
-      } else if (criterioOrdenacao === 'custo') {
-        lista.sort((a, b) => a.custoAcumulado - b.custoAcumulado);
+      document.getElementById('counter-unrecovered').textContent = formatBRL(unrecovered);
+      document.getElementById('counter-recovered').textContent = formatBRL(totalRecovered);
+      document.getElementById('total-gross').textContent = formatBRL(totalSubtracted);
+
+      document.getElementById('rate-second').textContent = formatBRL(RATE_SUBTRACTED_PER_SEC);
+      document.getElementById('rate-minute').textContent = formatBRL(RATE_SUBTRACTED_PER_SEC * 60);
+      document.getElementById('rate-day').textContent = formatBRL(RATE_SUBTRACTED_PER_SEC * 86400);
+
+      const recPercent = totalSubtracted > 0 ? (totalRecovered / totalSubtracted) * 100 : 4.12;
+      const lossPercent = 100 - recPercent;
+      document.getElementById('recovery-percent').textContent = recPercent.toFixed(2) + '%';
+      document.getElementById('bar-rec').style.width = recPercent.toFixed(2) + '%';
+      document.getElementById('bar-loss').style.width = lossPercent.toFixed(2) + '%';
+
+      document.getElementById('eq-hospitais').textContent = formatNumber(unrecovered / COST_HOSPITAL);
+      document.getElementById('eq-escolas').textContent = formatNumber(unrecovered / COST_ESCOLA);
+      document.getElementById('eq-casas').textContent = formatNumber(unrecovered / COST_CASA);
+      document.getElementById('eq-viaturas').textContent = formatNumber(unrecovered / COST_VIATURA);
+    }
+
+    function calculateUserImpact() {
+      const salaryInput = document.getElementById('user-salary');
+      const salary = parseFloat(salaryInput.value) || 0;
+
+      let months = 48;
+      if (currentPeriod === 'year') {
+        const now = new Date();
+        months = now.getMonth() + 1 + (now.getDate() / 30);
+      } else if (currentPeriod === 'today') {
+        months = 1 / 30;
       }
 
-      const filtrados = lista.filter(v => 
-        v.nome.toLowerCase().includes(termo) || v.partido.toLowerCase().includes(termo)
-      );
-
-      filtrados.forEach(v => {
-        const card = document.createElement("div");
-        card.className = "councilor-card";
-        card.innerHTML = `
-          <div class="councilor-top">
-            <span class="councilor-name">${v.nome}</span>
-            <span class="councilor-party">${v.partido}</span>
-          </div>
-          <div class="councilor-stats">
-            <div class="c-stat c-cost">
-              <span>Custo Acumulado</span>
-              <strong>${formatBRL(v.custoAcumulado)}</strong>
-            </div>
-            <div class="c-stat c-verba">
-              <span>Verbas Articuladas</span>
-              <strong>${formatBRL(v.verbasConquistadas)}</strong>
-            </div>
-            <div class="c-stat c-saldo">
-              <span>Balanço / Retorno</span>
-              <strong class="${v.saldo >= 0 ? 'pos' : 'neg'}">${v.saldo >= 0 ? '+' : ''}${formatBRL(v.saldo, true)}</strong>
-            </div>
-          </div>
-        `;
-        container.appendChild(card);
-      });
-    }
-
-    function atualizarPainel() {
-      const categoria = categorySelect.value;
-      const agoraMs = Date.now();
-      const segundosPassados = (agoraMs - inicioDoAno) / 1000;
-      const progressoAno = Math.min(100, Math.max(0, ((agoraMs - inicioDoAno) / (fimDoAno - inicioDoAno)) * 100));
+      const taxesPaid = salary * 0.34 * months;
+      const stolenFromUser = taxesPaid * 0.062;
       
-      document.getElementById("categorySubtitle").textContent = SUBTITULOS[categoria];
-      document.getElementById("progressPercent").textContent = progressoAno.toFixed(1) + "% do ano";
-      document.getElementById("progressFill").style.width = progressoAno.toFixed(1) + "%";
+      const dailyIncome = salary > 0 ? salary / 30 : 1;
+      const daysWorked = Math.max(0, stolenFromUser / dailyIncome);
 
-      // Impostômetro Santa Rita
-      const srAnual = DADOS_SRS.orcamento[categoria];
-      const srTaxaSeg = srAnual / SEGUNDOS_NO_ANO;
-      const srAcumulado = segundosPassados * srTaxaSeg;
-      const srPorHab = srAcumulado / DADOS_SRS.populacao;
-
-      document.getElementById("srCounter").textContent = formatBRL(srAcumulado);
-      document.getElementById("srRateSec").textContent = formatBRL(srTaxaSeg) + "/s";
-      document.getElementById("srRateMin").textContent = formatBRL(srTaxaSeg * 60) + "/m";
-      document.getElementById("srPerCapita").textContent = formatBRL(srPorHab);
-
-      // Destinação dos Tributos
-      document.getElementById("destSaude").textContent = formatBRL(srAcumulado * 0.28);
-      document.getElementById("destEducacao").textContent = formatBRL(srAcumulado * 0.26);
-      document.getElementById("destObras").textContent = formatBRL(srAcumulado * 0.18);
-      document.getElementById("destAdm").textContent = formatBRL(srAcumulado * 0.24);
-      document.getElementById("destCamara").textContent = formatBRL(srAcumulado * 0.04);
-
-      // Custo Câmara
-      const taxaCamaraSeg = DADOS_SRS.orcamentoCamara / SEGUNDOS_NO_ANO;
-      const camaraAcumulado = segundosPassados * taxaCamaraSeg;
-      document.getElementById("chamberCounter").textContent = formatBRL(camaraAcumulado);
-
-      // Equivalômetro
-      document.getElementById("equivAmbulancia").textContent = Math.floor(srAcumulado / VALOR_AMBULANCIA).toLocaleString("pt-BR");
-      document.getElementById("equivAsfalto").textContent = (srAcumulado / VALOR_KM_ASFALTO).toFixed(1) + " km";
-      document.getElementById("equivMerenda").textContent = Math.floor(srAcumulado / VALOR_REFEICAO).toLocaleString("pt-BR");
-
-      renderizarVereadores(segundosPassados);
+      document.getElementById('user-stolen-val').textContent = formatBRL(stolenFromUser);
+      document.getElementById('user-stolen-days').innerHTML = 
+        `Isso equivale a <strong>${daysWorked.toFixed(1)} dias</strong> de trabalho dedicados unicamente a cobrir o rombo da corrupção.`;
     }
 
-    searchCouncilor.addEventListener("input", () => {
-      const segundosPassados = (Date.now() - inicioDoAno) / 1000;
-      renderizarVereadores(segundosPassados);
-    });
-
-    function compartilharWhatsApp() {
-      const valor = document.getElementById("srCounter").textContent;
-      const camara = document.getElementById("chamberCounter").textContent;
-      const texto = encodeURIComponent(
-        `🏛️ *Portal de Transparência 4.0 - Santa Rita do Sapucaí - MG*\n\n` +
-        `💰 *Arrecadação Municipal:* ${valor}\n` +
-        `⚖️ *Custo da Câmara Municipal:* ${camara}\n\n` +
-        `Confira a destinação dos tributos e o desempenho dos 11 vereadores: ${window.location.href}`
-      );
-      window.open(`https://api.whatsapp.com/send?text=${texto}`, "_blank");
+    function shareDashboard() {
+      if (navigator.share) {
+        navigator.share({
+          title: 'Roubômetro Brasil',
+          text: 'Acompanhe em tempo real o contador de recursos públicos subtraídos e recuperados no Brasil!',
+          url: window.location.href
+        }).catch(() => {});
+      } else {
+        navigator.clipboard.writeText(window.location.href);
+        alert('Link copiado para a área de transferência!');
+      }
     }
 
-    categorySelect.addEventListener("change", atualizarPainel);
-    setInterval(atualizarPainel, 50);
-    atualizarPainel();
+    calculateUserImpact();
+    updateDashboard();
+    setInterval(updateDashboard, 50);
   </script>
 </body>
 </html>
